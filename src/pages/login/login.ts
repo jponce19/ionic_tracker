@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams , Slides, AlertController, LoadingController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { UsuarioProvider} from "../../providers/usuario/usuario";
+import { HomePage } from '../home/home';
 
 @Component({
   selector: 'page-login',
@@ -48,6 +49,11 @@ export class LoginPage {
         }
       }]
     }).present();
+  }
+
+  ingresar(){
+
+    this.navCtrl.setRoot( HomePage ); 
   }
 
 

@@ -1,6 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Platform } from 'ionic-angular'
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class UsuarioProvider {
@@ -10,7 +12,9 @@ export class UsuarioProvider {
   clave:string;
   user:any = {};
 
-  constructor(private dbfirebase: AngularFirestore
+  constructor(private dbfirebase: AngularFirestore,
+              private _platform: Platform,
+              private _Storage:Storage
     ) {
     console.log('Hello UsuarioProvider Provider');
   }
@@ -28,6 +32,7 @@ export class UsuarioProvider {
                       // correcto
                       this.user = data;
                       this.clave = clave;
+                      this.guardarStorage();
                       resolve(true);  
                   }else{
                     // respuesta incorrecta
@@ -41,7 +46,47 @@ export class UsuarioProvider {
   }
 
   guardarStorage(){
-    
+
+    if (this._platform.is("cordova")){
+       // celular
+      this._Storage.set('clave', this.clave);
+
+    }else{
+      // escritorio
+      localStorage.setItem('clave',this.clave);
+
+    }
+  }
+
+  cargarStorage(){
+
+    return new Promise( (resolve,reject) =>{
+
+      if (this._platform.is("cordova")){
+        // celular
+        this._Storage.get("clave").then( val =>{
+
+            if (val){
+              this.clave = val;  
+              resolve(true);
+            }else{
+              resolve(false);
+            }
+
+        })
+      
+      }else{
+        // escritorio
+        if (localStorage.getItem("clave")){
+          this.clave = localStorage.getItem("clave"); 
+          resolve(true);
+        }else{
+          resolve(false);
+        }
+      }
+
+
+    });
   }
 
 }

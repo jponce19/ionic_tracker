@@ -17,6 +17,7 @@ import { firebaseConfig } from '../config/firebase.config';
 
 // storage
 import { IonicStorageModule } from '@ionic/storage';
+import { UbicacionProvider } from '../providers/ubicacion/ubicacion';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { IonicStorageModule } from '@ionic/storage';
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
-    IonicStorageModule
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -41,7 +42,8 @@ import { IonicStorageModule } from '@ionic/storage';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    UsuarioProvider
+    UsuarioProvider,
+    UbicacionProvider
   ]
 })
 export class AppModule {}
