@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from 'ionic-angular'
 import { Storage } from '@ionic/storage';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class UsuarioProvider {
@@ -11,6 +12,7 @@ export class UsuarioProvider {
 
   clave:string;
   user:any = {};
+  private doc:Subscription;
 
   constructor(private dbfirebase: AngularFirestore,
               private _platform: Platform,
@@ -24,7 +26,7 @@ export class UsuarioProvider {
         clave = clave.toLocaleLowerCase();
         return new Promise ( (resolve, reject) =>{
 
-          this.dbfirebase.doc(`/usuarios/${clave}`)
+          this.doc = this.dbfirebase.doc(`/usuarios/${clave}`)
               .valueChanges().subscribe( data => {
                   console.log(data);
 
@@ -43,6 +45,21 @@ export class UsuarioProvider {
 
 
         });
+  }
+
+  borrarUsuarioLogin(){
+    this.clave = null;
+
+    if (this._platform.is("cordova")){
+      // celular
+     this._Storage.remove('clave');
+
+   }else{
+     // escritorio
+     localStorage.removeItem('clave');
+   }    
+
+    this.doc.unsubscribe();
   }
 
   guardarStorage(){
