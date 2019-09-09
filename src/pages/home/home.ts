@@ -8,11 +8,19 @@ import { UbicacionProvider } from "../../providers/ubicacion/ubicacion";
 })
 export class HomePage {
 
+  vuser:any ={};
+
   constructor(public navCtrl: NavController, 
               public _ServiceGeo: UbicacionProvider) {
 
 
                 this._ServiceGeo.iniciarGeolocalizaion();
+
+                this._ServiceGeo.taxista.valueChanges()
+                .subscribe( data =>{
+                  this.vuser = data;
+
+                });
 
   }
 
