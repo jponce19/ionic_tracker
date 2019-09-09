@@ -1,17 +1,52 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
+import { Geolocation } from '@ionic-native/geolocation';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { UsuarioProvider } from "../usuario/usuario";
 
-/*
-  Generated class for the UbicacionProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class UbicacionProvider {
 
-  constructor(public http: HttpClient) {
-    console.log('Hello UbicacionProvider Provider');
-  }
 
+  taxista:AngularFirestoreDocument<any>;
+  
+
+  constructor( private dbFireStore: AngularFirestore,
+               private geolocation: Geolocation ,
+               public _usuarioProv: UsuarioProvider) {
+
+    this.taxista = dbFireStore.doc(`/usuarios/${_usuarioProv.clave}`)
+  }
+  
+  iniciarGeolocalizaion(){
+
+    this.geolocation.getCurrentPosition().then((resp) => {
+      // resp.coords.latitude
+      // resp.coords.longitude
+
+      this.taxista.update({
+            lat: resp.coords.latitude,
+            lng: resp.coords.longitude,
+            clave: this._usuarioProv.clave
+      });
+
+      let watch = this.geolocation.watchPosition();
+      watch.subscribe((data) => {
+       // data can be a set of coordinates, or an error (if an error occurred).
+       // data.coords.latitude
+       // data.coords.longitude
+       this.taxista.update({
+            lat: data.coords.latitude,
+            lng: data.coords.longitude,
+            clave: this._usuarioProv.clave
+        });
+
+      });
+
+
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });    
+
+  }
 }

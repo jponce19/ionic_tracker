@@ -19,6 +19,9 @@ import { firebaseConfig } from '../config/firebase.config';
 import { IonicStorageModule } from '@ionic/storage';
 import { UbicacionProvider } from '../providers/ubicacion/ubicacion';
 
+// Geolocalizacion
+import { Geolocation } from '@ionic-native/geolocation';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -43,7 +46,8 @@ import { UbicacionProvider } from '../providers/ubicacion/ubicacion';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     UsuarioProvider,
-    UbicacionProvider
+    UbicacionProvider,
+    Geolocation
   ]
 })
 export class AppModule {}
